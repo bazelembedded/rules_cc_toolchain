@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+echo "Test compiler against well known repos."
+
+# Test compilation of well known repositories
+bazel build @com_google_googletest//... \
+            @com_github_google_benchmark//... \
+            @com_google_absl//...

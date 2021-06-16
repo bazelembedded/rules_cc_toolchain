@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e -o pipefail
+
+echo "Ensuring commit message format."
+LINTER_MESSAGE=$(git log -1 --pretty=%B | ./.githooks/mandate-conventional-changelog.sh)
+if [[ $LINTER_MESSAGE ]]; then
+    echo $LINTER_MESSAGE
+    exit 1
+fi
+

@@ -1,0 +1,31 @@
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+alias(
+    name = "libc_multiplexer",
+    actual = select({
+        ":linux_x86_64": "@debian_stretch_amd64_sysroot//:glibc",
+    }),
+    visibility = ["@rules_cc_toolchain_config//:__pkg__"],
+)
+
+alias(
+    name = "libunwind_multiplexer",
+    actual = select({
+        ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libunwind",
+    }),
+    visibility = ["@rules_cc_toolchain_config//:__pkg__"],
+)
+
+alias(
+    name = "libc++_multiplexer",
+    actual = select({
+        ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx",
+    }),
+    visibility = ["@rules_cc_toolchain_config//:__pkg__"],
+)

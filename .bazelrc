@@ -1,0 +1,8 @@
+# Enforce strict checks.
+build --incompatible_force_strict_header_check_from_starlark
+build --strict_filesets
+build --strict_system_includes
+build --incompatible_strict_action_env
+
+# Enforce strict checks of deprecated toolchain api.
+build --incompatible_require_linker_input_cc_api

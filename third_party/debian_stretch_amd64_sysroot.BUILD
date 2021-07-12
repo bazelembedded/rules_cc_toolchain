@@ -1,36 +1,119 @@
 load(
-    "@rules_cc_toolchain//tools/cc_toolchain_import:defs.bzl",
+    "@rules_cc_toolchain//cc_toolchain:cc_toolchain_import.bzl",
     "cc_toolchain_import",
 )
 load(
-    "@rules_cc_toolchain//tools/cc_toolchain_import:features.bzl",
-    "cc_toolchain_import_feature",
+    "@rules_cc_toolchain//cc_toolchain:sysroot.bzl",
+    "sysroot_package",
+)
+
+sysroot_package(
+    name = "sysroot",
+    visibility = ["//visibility:public"],
 )
 
 INCLUDES = [
-    "usr/include",
-    "usr/include/x86_64-linux-gnu",
-    "usr/lib/gcc/x86_64-linux-gnu/9/include",
     "usr/local/include",
+    "usr/include/x86_64-linux-gnu",
+    "usr/include",
+]
+
+CRT_OBJECTS = [
+    "crt1",
+    "crti",
+    "crtn",
+]
+
+[
+    cc_toolchain_import(
+        name = obj,
+        static_library = "usr/lib/x86_64-linux-gnu/%s.o" % obj,
+    )
+    for obj in CRT_OBJECTS
 ]
 
 cc_toolchain_import(
-    name = "glibc",
-    hdrs = glob([inc + "/*.h" for inc in INCLUDES]),
-    includes = INCLUDES,
-    shared_library = "usr/lib/x86_64-linux-gnu/libc.so",
-    static_library = "usr/lib/x86_64-linux-gnu/libc.a",
-    visibility = ["@rules_cc_toolchain//config:__pkg__"],
-)
-
-cc_toolchain_import_feature(
-    name = "libc",
-    enabled = True,
-    provides = ["libc"],
+    name = "crt",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
-    toolchain_import = ":glibc",
+    deps = [":" + obj for obj in CRT_OBJECTS],
+)
+
+cc_toolchain_import(
+    name = "gcc",
+    additional_libs = ["usr/lib/gcc/x86_64-linux-gnu/6/libgcc_s.so.1"],
+    runtime_path = "/usr/lib/x86_64-linux-gnu",
+    shared_library = "usr/lib/gcc/x86_64-linux-gnu/6/libgcc_s.so",
+    static_library = "usr/lib/gcc/x86_64-linux-gnu/6/libgcc.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
     visibility = ["@rules_cc_toolchain//config:__pkg__"],
+)
+
+cc_toolchain_import(
+    name = "mvec",
+    additional_libs = ["usr/lib/x86_64-linux-gnu/libmvec_nonshared.a"],
+    shared_library = "usr/lib/x86_64-linux-gnu/libmvec.so",
+    static_library = "usr/lib/x86_64-linux-gnu/libmvec.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+cc_toolchain_import(
+    name = "dynamic_linker",
+    shared_library = "usr/lib/x86_64-linux-gnu/libdl.so",
+    static_library = "usr/lib/x86_64-linux-gnu/libdl.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+cc_toolchain_import(
+    name = "math",
+    shared_library = "usr/lib/x86_64-linux-gnu/libm.so",
+    static_library = "usr/lib/x86_64-linux-gnu/libm.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+cc_toolchain_import(
+    name = "pthread",
+    additional_libs = ["usr/lib/x86_64-linux-gnu/libpthread_nonshared.a"],
+    shared_library = "usr/lib/x86_64-linux-gnu/libpthread.so",
+    static_library = "usr/lib/x86_64-linux-gnu/libpthread.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+cc_toolchain_import(
+    name = "glibc",
+    hdrs = glob([inc + "/**/*.h" for inc in INCLUDES] + [inc + "/*.h" for inc in INCLUDES]),
+    includes = INCLUDES,
+    shared_library = "usr/lib/x86_64-linux-gnu/libc.so",
+    static_library = "usr/lib/x86_64-linux-gnu/libc.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["@rules_cc_toolchain//config:__pkg__"],
+    deps = [
+        ":crt",
+        ":dynamic_linker",
+        ":gcc",
+        ":math",
+        ":mvec",
+        ":pthread",
+        "@rules_cc_toolchain_config//:compiler_rt",
+    ],
 )

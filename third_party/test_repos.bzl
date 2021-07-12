@@ -36,3 +36,14 @@ def test_repos():
             strip_prefix = "abseil-cpp-20200225.1",
             urls = ["https://github.com/abseil/abseil-cpp/archive/20200225.1.tar.gz"],
         )
+
+    if "com_google_protobuf" not in native.existing_rules():
+        http_archive(
+            name = "com_google_protobuf",
+            sha256 = "c6003e1d2e7fefa78a3039f19f383b4f3a61e81be8c19356f85b6461998ad3db",
+            strip_prefix = "protobuf-3.17.3",
+            urls = [
+                "https://mirror.bazel.build/github.com/protocolbuffers/protobuf/archive/v3.17.3.tar.gz",
+                "https://github.com/protocolbuffers/protobuf/archive/v3.17.3.tar.gz",
+            ],
+        )

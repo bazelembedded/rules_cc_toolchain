@@ -3,7 +3,9 @@ set -e -o pipefail
 
 echo "Test compiler against well known repos."
 
+TARGETS='@com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... @com_google_protobuf//:protoc'
+
 # Test compilation of well known repositories
-bazel build @com_google_googletest//... \
-            @com_github_google_benchmark//... \
-            @com_google_absl//...
+bazel test $TARGETS --test_tag_filters=-benchmark
+
+bazel build $TARGETS

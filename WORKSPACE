@@ -24,6 +24,8 @@ bazel_skylib_workspace()
 
 rules_cc_toolchain_deps()
 
+register_toolchains("//cc_toolchain/...")
+
 # Sets up Bazels documentation generator.
 # Required by: rules_cc_toolchain.
 # Required by modules: All
@@ -56,11 +58,6 @@ load("//third_party:test_repos.bzl", "test_repos")
 # Used by modules: None.
 test_repos()
 
-load(
-    "//config:rules_cc_toolchain_config_repository.bzl",
-    "rules_cc_toolchain_config",
-)
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
-rules_cc_toolchain_config(
-    name = "rules_cc_toolchain_config",
-)
+protobuf_deps()

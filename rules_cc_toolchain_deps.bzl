@@ -1,5 +1,6 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@rules_cc_toolchain//config:rules_cc_toolchain_config_repository.bzl", "rules_cc_toolchain_config")
 
 def rules_cc_toolchain_deps():
     # Setup latest version of Bazels platform repos. This should be called
@@ -47,4 +48,23 @@ def rules_cc_toolchain_deps():
             sha256 = "84656a6df544ecef62169cfe3ab6e41bb4346a62d3ba2a045dc5a0a2ecea94a3",
             urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_amd64_sysroot.tar.xz"],
             build_file = "@rules_cc_toolchain//third_party:debian_stretch_amd64_sysroot.BUILD",
+        )
+
+    # Setup rules_cc for toolchain rules.
+    # Required by: rules_cc_toolchain.
+    # Required by modeuls: cc_toolchain.
+    if "rules_cc" not in native.existing_rules():
+        http_archive(
+            name = "rules_cc",
+            urls = ["https://github.com/bazelbuild/rules_cc/archive/daf6ace7cfeacd6a83e9ff2ed659f416537b6c74.zip"],
+            sha256 = "b295cad8c5899e371dde175079c0a2cdc0151f5127acc92366a8c986beb95c76",
+            strip_prefix = "rules_cc-daf6ace7cfeacd6a83e9ff2ed659f416537b6c74",
+        )
+
+    # Setup default configuration for toolchain.
+    # Required by: rules_cc_toolchain.
+    # Required by modules: third_party, cc_toolchain.
+    if "rules_cc_toolchain_config" not in native.existing_rules():
+        rules_cc_toolchain_config(
+            name = "rules_cc_toolchain_config",
         )

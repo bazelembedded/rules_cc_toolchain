@@ -6,3 +6,6 @@ build --incompatible_strict_action_env
 
 # Enforce strict checks of deprecated toolchain api.
 build --incompatible_require_linker_input_cc_api
+
+# Use new cc toolchain resolution api
+build --incompatible_enable_cc_toolchain_resolution

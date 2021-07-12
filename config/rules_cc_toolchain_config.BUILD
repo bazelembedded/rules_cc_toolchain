@@ -21,3 +21,18 @@ label_flag(
     name = "libc++",
     build_setting_default = "@rules_cc_toolchain//config:libc++_multiplexer",
 )
+
+label_flag(
+    name = "libc++abi",
+    build_setting_default = "@rules_cc_toolchain//config:libc++abi_multiplexer",
+)
+
+label_flag(
+    name = "compiler_rt",
+    build_setting_default = "@rules_cc_toolchain//config:libclang_rt_multiplexer",
+)
+
+label_flag(
+    name = "user_defined",
+    build_setting_default = "@rules_cc_toolchain//config:empty",
+)

@@ -28,5 +28,5 @@ jobs:
       # Runs a single command using the runners shell
       - name: Bazel build/test external test repos
         run: bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... && \
-             bazelisk test @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//...
-            
+             bazelisk test @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --test_tag_filters=-benchmark
+

@@ -1,0 +1,170 @@
+load(
+    ":features.bzl",
+    "cc_feature",
+    "cc_toolchain_import_feature",
+    "cc_toolchain_sysroot_feature",
+)
+
+package(
+    default_visibility = ["//cc_toolchain:__pkg__"],
+)
+
+# System library feature.
+cc_toolchain_import_feature(
+    name = "toolchain_import",
+    enabled = True,
+    toolchain_import = "//cc_toolchain:all_imports",
+)
+
+# Reduces binary size by putting each block of data and function in their own
+# sections, the linker can then garbage collect, discarding unused functions
+# and other dead code.
+cc_feature(
+    name = "garbage_collect_symbols",
+    compiler_flags = [
+        "-fdata-sections",
+        "-ffunction-sections",
+    ],
+    enabled = True,
+    linker_flags = ["-Wl,--gc-sections"],
+)
+
+cc_feature(
+    name = "warnings",
+    compiler_flags = [
+        "-Wall",
+        "-Wpedantic",
+    ],
+)
+
+cc_feature(
+    name = "errors",
+    compiler_flags = ["-Werror"],
+)
+
+# Override time macros to ensure reproducible builds.
+cc_feature(
+    name = "reproducible",
+    compiler_flags = [
+        "-no-canonical-prefixes",
+        "-Wno-builtin-macro-redefined",
+        "-D__DATE__=\"redacted\"",
+        "-D__TIMESTAMP__=\"redacted\"",
+        "-D__TIME__=\"redacted\"",
+    ],
+    enabled = True,
+)
+
+cc_feature(
+    name = "language",
+    c_flags = [
+        "-xc",
+    ],
+    cc_flags = [
+        "-xc++",
+    ],
+    enabled = True,
+)
+
+# Hermetic includes.
+cc_feature(
+    name = "hermetic_libraries",
+    cc_flags = ["-nostdinc++"],
+    compiler_flags = ["-nostdinc"],
+    enabled = True,
+    linker_flags = [
+        "-nostdlib",
+        "-nodefaultlibs",
+    ],
+)
+
+# Instruments the executable to emit code coverage information.
+cc_feature(
+    name = "coverage",
+    compiler_flags = [
+        "--coverage",
+        "-fprofile-instr-generate",
+        "-fcoverage-mapping",
+    ],
+    linker_flags = ["-fprofile-instr-generate"],
+)
+
+# Compilation modes.
+cc_feature(
+    name = "opt",
+    compiler_flags = [
+        "-O2",
+        "-flto",
+    ],
+    linker_flags = ["-flto"],
+    provides = ["compilation_mode"],
+)
+
+cc_feature(
+    name = "dbg",
+    compiler_flags = [
+        "-O0",
+        "-g3",
+    ],
+    provides = ["compilation_mode"],
+)
+
+cc_feature(
+    name = "use_lld",
+    enabled = True,
+    linker_flags = [
+        "-fuse-ld=lld",
+    ],
+)
+
+cc_feature(
+    name = "position_independent_code",
+    compiler_flags = [
+        "-fPIC",
+    ],
+    enabled = True,
+)
+
+cc_toolchain_sysroot_feature(
+    name = "sysroot",
+    enabled = True,
+    sysroot = "@debian_stretch_amd64_sysroot//:sysroot",
+)
+
+cc_feature(
+    name = "fastbuild",
+    compiler_flags = ["-O0"],
+    provides = ["compilation_mode"],
+)
+
+# Language features.
+CC_VERSIONS = [
+    "c++11",
+    "c++14",
+    "c++17",
+    "c++20",
+]
+
+[cc_feature(
+    name = cc_version,
+    cc_flags = [
+        "-std=" + cc_version,
+    ],
+    provides = ["cc_standard"],
+) for cc_version in CC_VERSIONS]
+
+C_VERSIONS = [
+    "c89",
+    "c90",
+    "c95",
+    "c99",
+    "c11",
+]
+
+[cc_feature(
+    name = c_version,
+    cc_flags = [
+        "-std=" + c_version,
+    ],
+    provides = ["c_standard"],
+) for c_version in C_VERSIONS]

@@ -57,7 +57,10 @@ def _normalise_include(ctx, inc):
     root_str = ""
     if ctx.label.workspace_root:
         root_str = ctx.label.workspace_root + "/"
-    return root_str + ctx.label.package + inc
+    package_str = ""
+    if ctx.label.package:
+        package_str = ctx.label.package + "/"
+    return root_str + package_str + inc
 
 def _cc_toolchain_import_impl(ctx):
     deps = ctx.attr.deps

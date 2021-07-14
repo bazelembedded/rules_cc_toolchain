@@ -23,4 +23,6 @@
 # SOFTWARE.
 
 set -euo pipefail
-$LLVM_COV_TOOL_PATH $@
+# TODO(issues/4): make this compiler independant currently no easy way to do
+# this via features/actions configs.
+external/clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04/bin/llvm-cov $@

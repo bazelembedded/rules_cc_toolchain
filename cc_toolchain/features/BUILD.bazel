@@ -86,7 +86,10 @@ cc_feature(
         "-fprofile-instr-generate",
         "-fcoverage-mapping",
     ],
-    linker_flags = ["-fprofile-instr-generate"],
+    linker_flags = [
+        "-fprofile-instr-generate",
+        "-fcoverage-mapping",
+    ],
 )
 
 # Compilation modes.

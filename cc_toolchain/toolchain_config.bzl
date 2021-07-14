@@ -13,6 +13,7 @@ load(
     "ACTION_NAMES",
     "ACTION_NAME_GROUPS",
 )
+load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "LLVM_COV")
 
 ALL_ACTIONS = [
     ACTION_NAMES.c_compile,
@@ -41,6 +42,7 @@ ALL_ACTIONS = [
     ACTION_NAMES.objcpp_compile,
     ACTION_NAMES.objcpp_executable,
     ACTION_NAMES.clif_match,
+    LLVM_COV,
 ]
 
 def _label_to_tool_path_feature(tool_mapping = {}):
@@ -117,10 +119,11 @@ cc_toolchain_config = rule(
         "_tool_paths": attr.string_dict(
             default = {
                 "gcc": "wrappers/posix/gcc",
+                "cpp": "wrappers/posix/cpp",
                 "ld": "wrappers/posix/ld",
                 "ar": "wrappers/posix/ar",
-                "cpp": "wrappers/posix/cpp",
                 "gcov": "wrappers/posix/gcov",
+                "llvm-cov": "wrappers/posix/llvm-cov",
                 "nm": "wrappers/posix/nm",
                 "objdump": "wrappers/posix/objdump",
                 "strip": "wrappers/posix/strip",

@@ -118,11 +118,17 @@ cc_feature(
 )
 
 cc_feature(
+    name = "supports_pic",
+    enabled = False,
+)
+
+cc_feature(
     name = "position_independent_code",
     compiler_flags = [
         "-fPIC",
     ],
     enabled = True,
+    implies = [":supports_pic"],
 )
 
 cc_toolchain_sysroot_feature(

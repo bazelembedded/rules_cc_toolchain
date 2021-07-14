@@ -9,12 +9,14 @@ cc_toolchain_import(
     name = "all_imports",
     visibility = ["//visibility:public"],
     deps = [
+        # buildifier don't sort, allow user to override system libs.
+        # System libs will be found first as the include paths are found.
+        "@rules_cc_toolchain_config//:user_defined",
         "@rules_cc_toolchain_config//:compiler_rt",
         "@rules_cc_toolchain_config//:libc",
         "@rules_cc_toolchain_config//:libc++",
         "@rules_cc_toolchain_config//:libc++abi",
         "@rules_cc_toolchain_config//:libunwind",
-        "@rules_cc_toolchain_config//:user_defined",
     ],
 )
 
@@ -105,6 +107,7 @@ cc_toolchain_config(
         "//cc_toolchain/features:opt",
         "//cc_toolchain/features:fastbuild",
         "//cc_toolchain/features:position_independent_code",
+        "//cc_toolchain/features:supports_pic",
     ],
     linker = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/ld.lld",
     object_dump_tool = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-objdump",

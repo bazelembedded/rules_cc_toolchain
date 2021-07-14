@@ -63,7 +63,7 @@ def _feature_impl(ctx):
             name = ctx.label.name,
             enabled = ctx.attr.enabled,
             provides = ctx.attr.provides,
-            implies = [label.name for label in ctx.attr.implies],
+            implies = [target.label.name for target in ctx.attr.implies],
             flag_sets = flag_sets,
         ),
     ]
@@ -173,6 +173,15 @@ def _cc_toolchain_import_feature_impl(ctx):
             flag_groups = [
                 flag_group(
                     flags = include_flags,
+                ),
+            ],
+        ))
+    if injected_include_flags:
+        flag_sets.append(flag_set(
+            actions = ALL_CC_COMPILE_ACTION_NAMES,
+            flag_groups = [
+                flag_group(
+                    flags = injected_include_flags,
                 ),
             ],
         ))

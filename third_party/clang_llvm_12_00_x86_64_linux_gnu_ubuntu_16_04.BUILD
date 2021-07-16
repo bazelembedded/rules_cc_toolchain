@@ -70,7 +70,6 @@ cc_toolchain_import(
         "lib/libc++.so.1",
     ],
     includes = ["include/c++/v1"],
-    shared_library = "lib/libc++.so",
     static_library = "lib/libc++.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
@@ -87,7 +86,6 @@ cc_toolchain_import(
     name = "llvm_libcxx_abi",
     hdrs = glob(["include/c++/v1/**"]),
     includes = ["include/c++/v1"],
-    shared_library = "lib/libc++abi.so",
     static_library = "lib/libc++abi.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],

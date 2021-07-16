@@ -33,11 +33,12 @@ CRT_OBJECTS = [
 ]
 
 cc_toolchain_import(
-    name = "crt",
+    name = "startup_libs",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
+    visibility = ["@rules_cc_toolchain//config:__pkg__"],
     deps = [":" + obj for obj in CRT_OBJECTS],
 )
 
@@ -108,7 +109,6 @@ cc_toolchain_import(
     }),
     visibility = ["@rules_cc_toolchain//config:__pkg__"],
     deps = [
-        ":crt",
         ":dynamic_linker",
         ":gcc",
         ":math",

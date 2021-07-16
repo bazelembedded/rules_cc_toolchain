@@ -48,6 +48,14 @@ alias(
     }),
 )
 
+alias(
+    name = "startup_libs",
+    actual = select({
+        ":linux_x86_64": "@debian_stretch_amd64_sysroot//:startup_libs",
+        "//conditions:default": ":empty",
+    }),
+)
+
 # This is a placeholder to signify an empty dependency.
 cc_toolchain_import(
     name = "empty",

@@ -16,6 +16,12 @@ cc_toolchain_import_feature(
     toolchain_import = "//cc_toolchain:all_imports",
 )
 
+cc_toolchain_import_feature(
+    name = "startup_libs",
+    enabled = True,
+    toolchain_import = "@rules_cc_toolchain_config//:startup_libs",
+)
+
 # Reduces binary size by putting each block of data and function in their own
 # sections, the linker can then garbage collect, discarding unused functions
 # and other dead code.

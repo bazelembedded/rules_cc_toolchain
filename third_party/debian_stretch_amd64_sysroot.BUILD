@@ -95,6 +95,20 @@ cc_toolchain_import(
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
+    deps = [":rt"],
+)
+
+cc_toolchain_import(
+    name = "rt",
+    additional_libs = [
+        "lib/x86_64-linux-gnu/librt.so.1",
+        "lib/x86_64-linux-gnu/librt-2.24.so",
+    ],
+    static_library = "usr/lib/x86_64-linux-gnu/librt.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
 )
 
 cc_toolchain_import(

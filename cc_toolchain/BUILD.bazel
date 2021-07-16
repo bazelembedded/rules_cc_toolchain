@@ -24,6 +24,7 @@ filegroup(
     name = "all",
     srcs = [
         ":all_imports",
+        "//cc_toolchain/features:startup_libs",
         "//cc_toolchain/wrappers:all",
         "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:all",
     ],
@@ -50,6 +51,7 @@ filegroup(
     name = "linker_files",
     srcs = [
         ":compiler_files",
+        "//cc_toolchain/features:startup_libs",
         "//cc_toolchain/wrappers:all",
         "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:linker_files",
     ],
@@ -108,6 +110,7 @@ cc_toolchain_config(
         "//cc_toolchain/features:fastbuild",
         "//cc_toolchain/features:position_independent_code",
         "//cc_toolchain/features:supports_pic",
+        "//cc_toolchain/features:startup_libs",
         "//cc_toolchain/features:coverage",
     ],
     linker = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/ld.lld",

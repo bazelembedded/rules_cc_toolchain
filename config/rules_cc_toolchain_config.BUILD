@@ -36,3 +36,8 @@ label_flag(
     name = "user_defined",
     build_setting_default = "@rules_cc_toolchain//config:empty",
 )
+
+label_flag(
+    name = "startup_libs",
+    build_setting_default   = "@rules_cc_toolchain//config:startup_libs",
+)

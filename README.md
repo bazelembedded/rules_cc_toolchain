@@ -1,4 +1,6 @@
 # rules_cc_toolchain
+[![CI](https://github.com/silvergasp/bazel_rules_cc_toolchain/actions/workflows/blank.yml/badge.svg)](https://github.com/silvergasp/bazel_rules_cc_toolchain/actions/workflows/blank.yml)
+
 An opinionated hermetic host toolchain for Bazel and C++. Currently this 
 toolchain supports;
 - Completely sandboxed linux builds (i.e. no system deps).

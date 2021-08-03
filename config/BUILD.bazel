@@ -56,6 +56,11 @@ alias(
     }),
 )
 
+alias(
+    name = "clang_tidy_config_multiplexer",
+    actual = "//tools/clang_tidy:default",
+)
+
 # This is a placeholder to signify an empty dependency.
 cc_toolchain_import(
     name = "empty",

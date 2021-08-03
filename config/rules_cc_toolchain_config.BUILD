@@ -39,5 +39,10 @@ label_flag(
 
 label_flag(
     name = "startup_libs",
-    build_setting_default   = "@rules_cc_toolchain//config:startup_libs",
+    build_setting_default = "@rules_cc_toolchain//config:startup_libs",
+)
+
+label_flag(
+    name = "clang_tidy_config",
+    build_setting_default = "@rules_cc_toolchain//config:clang_tidy_config_multiplexer",
 )

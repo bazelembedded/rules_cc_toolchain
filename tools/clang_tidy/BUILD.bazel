@@ -1,0 +1,7 @@
+load(":clang_tidy.bzl", "clang_tidy_config")
+
+clang_tidy_config(
+    name = "default",
+    config = ".clang-tidy",
+    visibility = ["//visibility:public"],
+)

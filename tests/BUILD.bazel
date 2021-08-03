@@ -15,3 +15,9 @@ cc_test(
     name = "dummy_test2",
     srcs = ["dummy_test2.cc"],
 )
+
+# This is an intentionally buggy binary to test static analysis.
+cc_binary(
+    name = "dereferencing_null_pointer",
+    srcs = ["dereferencing_null_pointer.cc"],
+)

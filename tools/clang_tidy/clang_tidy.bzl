@@ -170,44 +170,44 @@ clang_tidy_aspect = aspect(
     },
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
     doc = """
-    Runs clang-tidy on the given C++ sources
+Runs clang-tidy on the given C++ sources
 
-    This aspect runs clang-tidy on the given set of c/c++ sources. You can use this aspect
-    by running;
-    ``` sh
-    bazel build //my:target \\ 
-        --aspects build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect
-    ```
+This aspect runs clang-tidy on the given set of c/c++ sources. You can use this aspect
+by running;
+``` sh
+bazel build //my:target \\ 
+    --aspects build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+```
 
-    You can override the default configuration by using the clang_tidy_config rule. e.g.
-    ```py
-    # //BUILD.bazel
-    cc_toolchain_config(
-        name = "my_config",
-        config = ".clang-tidy",
-    )
-    ```
-    The passing in a command line flag to point the aspect at your new config rule e.g.
-    ``` sh
-    bazel build //my:target \\ 
-        --aspects @build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect \\
-        --@rules_cc_toolchain_config//:clang_tidy_config=//:my_config
-    ```
+You can override the default configuration by using the clang_tidy_config rule. e.g.
+```py
+# //BUILD.bazel
+cc_toolchain_config(
+    name = "my_config",
+    config = ".clang-tidy",
+)
+```
+The passing in a command line flag to point the aspect at your new config rule e.g.
+``` sh
+bazel build //my:target \\ 
+    --aspects @build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect \\
+    --@rules_cc_toolchain_config//:clang_tidy_config=//:my_config
+```
     
-    In most cases it is likely that you will want to shorten the command line flags using 
-    your .bazelrc file. e.g.
-    ```
-    # //.bazelrc
-    build:analyze --aspects @build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect
-    build:analyze --@rules_cc_toolchain_config//:clang_tidy_config=//:my_config
-    ```
+In most cases it is likely that you will want to shorten the command line flags using 
+your .bazelrc file. e.g.
+```
+# //.bazelrc
+build:analyze --aspects @build_bazel_rules_cc//cc:clang_tidy:clang_tidy.bzl%clang_tidy_aspect
+build:analyze --@rules_cc_toolchain_config//:clang_tidy_config=//:my_config
+```
 
-    You can then run the analysis using the following command;
-    ``` sh
-    bazel build //my:target --config analyze
-    ```
+You can then run the analysis using the following command;
+``` sh
+bazel build //my:target --config analyze
+```
 
-    """,
+""",
 )
 
 def _clang_tidy_config_impl(ctx):
@@ -218,6 +218,8 @@ clang_tidy_config = rule(
     attrs = {
         "config": attr.label(
             allow_single_file = [".clang-tidy"],
+            mandatory = True,
+            doc = "Clang tidy config file.",
         ),
     },
     provides = [ClangTidyConfigInfo],

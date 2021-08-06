@@ -4,6 +4,8 @@ load(
     "@rules_cc_toolchain//cc_toolchain:cc_toolchain_import.bzl",
     "cc_toolchain_import",
 )
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
 
 cc_toolchain_import(
     name = "all_imports",
@@ -130,4 +132,36 @@ toolchain(
     ],
     toolchain = ":linux_x86_64_toolchain",
     toolchain_type = "@rules_cc//cc:toolchain_type",
+)
+
+STARLARK_SRCS = [
+    "cc_toolchain",
+    "cc_toolchain_import",
+    "sysroot",
+    "toolchain_config",
+]
+
+bzl_library(
+    name = "srcs",
+    srcs = [src + ".bzl" for src in STARLARK_SRCS],
+    visibility = ["//visibility:public"],
+)
+
+[
+    stardoc(
+        name = src + "_doc",
+        out = src + "_doc.md",
+        input = src + ".bzl",
+        deps = [
+            ":srcs",
+            "//third_party:bazel_tools_cc_action_names",
+            "//third_party:rules_cc",
+        ],
+    )
+    for src in STARLARK_SRCS
+]
+
+filegroup(
+    name = "docs",
+    srcs = [":" + src + "_doc" for src in STARLARK_SRCS],
 )

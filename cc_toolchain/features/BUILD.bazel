@@ -4,6 +4,10 @@ load(
     "cc_toolchain_import_feature",
     "cc_toolchain_sysroot_feature",
 )
+load(
+    "@io_bazel_stardoc//stardoc:stardoc.bzl",
+    "stardoc",
+)
 
 package(
     default_visibility = ["//cc_toolchain:__pkg__"],
@@ -183,3 +187,13 @@ C_VERSIONS = [
     ],
     provides = ["c_standard"],
 ) for c_version in C_VERSIONS]
+
+stardoc(
+    name = "features_doc",
+    out = "features_doc.md",
+    input = "features.bzl",
+    deps = [
+        "//cc_toolchain:srcs",
+        "//third_party:rules_cc",
+    ],
+)

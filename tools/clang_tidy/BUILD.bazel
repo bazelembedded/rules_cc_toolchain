@@ -1,7 +1,19 @@
 load(":clang_tidy.bzl", "clang_tidy_config")
+load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
 
 clang_tidy_config(
     name = "default",
     config = ".clang-tidy",
     visibility = ["//visibility:public"],
+)
+
+stardoc(
+    name = "docs",
+    out = "clang_tidy_doc.md",
+    input = "clang_tidy.bzl",
+    symbol_names = [
+        "clang_tidy_config",
+        "clang_tidy_aspect",
+    ],
+    deps = ["//third_party:rules_cc"],
 )

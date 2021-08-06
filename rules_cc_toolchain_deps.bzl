@@ -3,6 +3,8 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@rules_cc_toolchain//config:rules_cc_toolchain_config_repository.bzl", "rules_cc_toolchain_config")
 
 def rules_cc_toolchain_deps():
+    """Fetches the toolchain dependencies """
+
     # Setup latest version of Bazels platform repos. This should be called
     # before all other workspace deps.
     # Required by modules: cc_toolchain.

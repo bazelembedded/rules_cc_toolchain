@@ -102,6 +102,7 @@ cc_toolchain_import(
     hdrs = glob([
         "lib/clang/12.0.0/*.h",
         "lib/clang/12.0.0/include/*.h",
+        "lib/clang/12.0.0/include/**/*.h",
     ]),
     includes = [
         "lib/clang/12.0.0",

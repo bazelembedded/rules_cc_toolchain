@@ -15,3 +15,6 @@ coverage --combined_report=lcov
 coverage --experimental_use_llvm_covmap
 coverage --experimental_generate_llvm_lcov
 coverage --incompatible_cc_coverage
+
+# Static analyser support 
+build:analyser --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report 

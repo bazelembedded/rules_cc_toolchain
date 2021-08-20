@@ -16,7 +16,7 @@ def _language(file):
     Args:
         file (File): The file to get the language for
     """
-    if file.extension == ".c":
+    if file.extension == "c":
         return "c"
     else:
         return "cc"

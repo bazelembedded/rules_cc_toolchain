@@ -6,6 +6,8 @@ toolchain supports;
 - Completely sandboxed linux builds (i.e. no system deps).
 - Code coverage and combined lcov reports e.g.
   `bazel coverage //...`
+- Static analysis (with clang-tidy). Read the
+  [docs here](tools/clang_tidy/README.md).
 
 The toolchain is modular enough that you should be able to BYO;
 - Compiler and runtime

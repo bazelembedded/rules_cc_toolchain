@@ -58,9 +58,9 @@ def rules_cc_toolchain_deps():
     if "rules_cc" not in native.existing_rules():
         http_archive(
             name = "rules_cc",
-            urls = ["https://github.com/bazelbuild/rules_cc/archive/426f72132372dfbd3a904d283662faba71bdf393.zip"],
-            sha256 = "c6a9a5db472b9c3f7aef544a7f3b688ba08f04f19b4026bc526675e28c3c7beb",
-            strip_prefix = "rules_cc-426f72132372dfbd3a904d283662faba71bdf393",
+            urls = ["https://github.com/bazelbuild/rules_cc/archive/22532c537959149599e79df29808176345784cc1.zip"],
+            sha256 = "c4c764f6202ee3d81bfcad774a8765dbbb43dce325cbde067335bf88d9baa12e",
+            strip_prefix = "rules_cc-22532c537959149599e79df29808176345784cc1",
         )
 
     # Setup default configuration for toolchain.

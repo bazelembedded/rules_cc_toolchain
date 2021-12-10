@@ -84,10 +84,10 @@ def _impl(ctx):
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        toolchain_identifier = "k8-toolchain",
-        host_system_name = "x86_64",
-        target_system_name = "x86_64",
-        target_cpu = "x86_64",
+        toolchain_identifier = "unknown",
+        host_system_name = "unknown",
+        target_system_name = "unknown",
+        target_cpu = "unknown",
         target_libc = "unknown",
         compiler = "clang",
         abi_version = "unknown",
@@ -110,7 +110,6 @@ def _impl(ctx):
             "objdump": ctx.file.object_dump_tool,
             "strip": ctx.file.strip_tool,
         })],
-        #action_configs = action_configs,
     )
 
 cc_toolchain_config = rule(
@@ -133,51 +132,61 @@ cc_toolchain_config = rule(
             providers = [FeatureInfo],
             doc = "A list of features that are used by the toolchain.",
             mandatory = True,
+            cfg = "target",
         ),
         "c_compiler": attr.label(
             doc = "The c compiler e.g. clang/gcc. Maps to tool path 'gcc'.",
             allow_single_file = True,
             mandatory = True,
+            cfg = "exec",
         ),
         "cc_compiler": attr.label(
             doc = "The c++ compiler e.g. clang/gcc. Maps to tool path 'cpp'.",
             allow_single_file = True,
             mandatory = True,
+            cfg = "exec",
         ),
         "linker": attr.label(
             doc = "The linker e.g. ld/lld. Maps to tool path 'ld'.",
             allow_single_file = True,
             mandatory = True,
+            cfg = "exec",
         ),
         "archiver": attr.label(
             doc = "The archiver e.g. ar/llvm-ar. Maps to tool path 'ar'.",
             allow_single_file = True,
             mandatory = True,
+            cfg = "exec",
         ),
         "test_coverage_tool": attr.label(
             doc = "The test coverage tool e.g. gcov/llvm-profdata.\
  Maps to tool path 'gcov'.",
             allow_single_file = True,
+            cfg = "exec",
         ),
         "binary_coverage_tool": attr.label(
             doc = "The binary test coverage tool e.g. llvm-cov. Maps to tool \
 path 'llvm-cov'.",
             allow_single_file = True,
+            cfg = "exec",
         ),
         "symbol_list_tool": attr.label(
             doc = "The symbol list tool e.g. nm. Maps to tool path 'nm'.",
             allow_single_file = True,
             mandatory = True,
+            cfg = "exec",
         ),
         "object_dump_tool": attr.label(
             doc = "The object dump tool e.g. objdump. Maps to tool path \
 'objdump'.",
+            cfg = "exec",
             allow_single_file = True,
             mandatory = True,
         ),
         "strip_tool": attr.label(
             doc = "The strip tool e.g. strip. Maps to tool path 'strip'.",
             allow_single_file = True,
+            cfg = "exec",
         ),
     },
     provides = [CcToolchainConfigInfo],

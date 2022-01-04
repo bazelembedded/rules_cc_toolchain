@@ -82,7 +82,6 @@ cc_feature(
 # Hermetic includes.
 cc_feature(
     name = "hermetic_libraries",
-    cc_flags = ["-nostdinc++"],
     compiler_flags = ["-nostdinc"],
     enabled = True,
     linker_flags = [

@@ -6,6 +6,10 @@ load(
 )
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
+load(
+    "@rules_cc_toolchain//third_party:gcc_arm_none_eabi_10_3_2021_10_x86_64_helpers.bzl",
+    ARM_NONE_EABI_LIB_INFO = "LIB_INFO",
+)
 
 cc_toolchain_import(
     name = "all_imports",
@@ -23,7 +27,7 @@ cc_toolchain_import(
 )
 
 filegroup(
-    name = "all",
+    name = "all_files",
     srcs = [
         ":all_imports",
         "//cc_toolchain/features:startup_libs",
@@ -75,12 +79,90 @@ filegroup(
     ],
 )
 
+################################ arm-none-eabi ################################
+cc_toolchain_config(
+    name = "arm_none_eabi_toolchain_config",
+    archiver = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-ar",
+    c_compiler = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/clang",
+    cc_compiler = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/clang++",
+    compiler_features = [
+        # Hermetic libraries feature required before import.
+        "//cc_toolchain/features:hermetic_libraries",
+        "//cc_toolchain/features:toolchain_import",
+
+        # Common configuration.
+        "//cc_toolchain/features:garbage_collect_symbols",
+        "//cc_toolchain/features:warnings",
+        "//cc_toolchain/features:errors",
+        "//cc_toolchain/features:reproducible",
+        "//cc_toolchain/features:language",
+        "//cc_toolchain/features:use_lld",
+        "//cc_toolchain/features:sysroot",
+        "//cc_toolchain/features:dbg",
+        "//cc_toolchain/features:opt",
+        "//cc_toolchain/features:opt_standard",
+        "//cc_toolchain/features:fastbuild",
+        "//cc_toolchain/features:startup_libs",
+        "//cc_toolchain/features:coverage",
+
+        # Baremetal configuration.
+        "//cc_toolchain/features:opt_size",
+        "//cc_toolchain/features:float_abi",
+        "//cc_toolchain/features:free_standing_code",
+        "//cc_toolchain/features:no_rtti",
+
+        # ARM specific configuration.
+        "//cc_toolchain/features:arm_cpu",
+        "//cc_toolchain/features:arm_fpu",
+        "//cc_toolchain/features:thumb_target_triplet",
+    ],
+    linker = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/ld.lld",
+    object_dump_tool = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-objdump",
+    symbol_list_tool = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-nm",
+)
+
+[
+    cc_toolchain(
+        name = name + "_none_eabi_toolchain",
+        all_files = ":all_files",
+        ar_files = ":ar_files",
+        as_files = ":compiler_files",
+        compiler_files = ":compiler_files",
+        dwp_files = ":all_files",
+        linker_files = ":linker_files",
+        objcopy_files = ":objcopy_files",
+        strip_files = ":strip_files",
+        supports_param_files = 0,
+        toolchain_config = ":arm_none_eabi_toolchain_config",
+        toolchain_identifier = name + "_none_eabi",
+    )
+    for name, info in ARM_NONE_EABI_LIB_INFO.items()
+]
+
+[
+    toolchain(
+        name = name + "_none_eabi_cc_toolchain",
+        exec_compatible_with = [
+            "@platforms//os:none",
+        ] + info["constraint_values"],
+        target_compatible_with = [
+            "@platforms//os:none",
+        ] + info["constraint_values"],
+        toolchain = ":" + name + "_none_eabi_toolchain",
+        toolchain_type = "@rules_cc//cc:toolchain_type",
+    )
+    for name, info in ARM_NONE_EABI_LIB_INFO.items()
+]
+
+########################### Linux x86_64 ######################################
+
 cc_toolchain(
     name = "linux_x86_64_toolchain",
-    all_files = ":all",
+    all_files = ":all_files",
     ar_files = ":ar_files",
+    as_files = ":compiler_files",
     compiler_files = ":compiler_files",
-    dwp_files = ":all",
+    dwp_files = ":all_files",
     linker_files = ":linker_files",
     objcopy_files = ":objcopy_files",
     strip_files = ":strip_files",
@@ -109,6 +191,8 @@ cc_toolchain_config(
         "//cc_toolchain/features:sysroot",
         "//cc_toolchain/features:dbg",
         "//cc_toolchain/features:opt",
+        "//cc_toolchain/features:opt_size",
+        "//cc_toolchain/features:opt_standard",
         "//cc_toolchain/features:fastbuild",
         "//cc_toolchain/features:position_independent_code",
         "//cc_toolchain/features:supports_pic",

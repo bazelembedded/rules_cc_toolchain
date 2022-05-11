@@ -22,6 +22,7 @@ filegroup(
     srcs = [
         "bin/clang",
         "bin/clang++",
+        "bin/llvm-as",
     ],
     visibility = ["//visibility:public"],
 )

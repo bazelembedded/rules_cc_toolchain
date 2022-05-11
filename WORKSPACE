@@ -24,7 +24,9 @@ bazel_skylib_workspace()
 
 rules_cc_toolchain_deps()
 
-register_toolchains("//cc_toolchain/...")
+register_execution_platforms("@rules_cc_toolchain//tests/...")
+
+register_toolchains("@rules_cc_toolchain//cc_toolchain/...")
 
 # Sets up Bazels documentation generator.
 # Required by: rules_cc_toolchain.
@@ -33,6 +35,7 @@ git_repository(
     name = "io_bazel_stardoc",
     commit = "8f6d22452d088b49b13ba2c224af69ccc8ccbc90",
     remote = "https://github.com/bazelbuild/stardoc.git",
+    shallow_since = "1620849756 -0400",
 )
 
 # Sets up Bazels packaging rules, for use the document generator.

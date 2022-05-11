@@ -8,6 +8,7 @@ load(
     "@io_bazel_stardoc//stardoc:stardoc.bzl",
     "stardoc",
 )
+load("@bazel_skylib//lib:selects.bzl", "selects")
 
 package(
     default_visibility = ["//cc_toolchain:__pkg__"],
@@ -25,6 +26,8 @@ cc_toolchain_import_feature(
     enabled = True,
     toolchain_import = "@rules_cc_toolchain_config//:startup_libs",
 )
+
+################################### COMMON ####################################
 
 # Reduces binary size by putting each block of data and function in their own
 # sections, the linker can then garbage collect, discarding unused functions
@@ -79,7 +82,6 @@ cc_feature(
 # Hermetic includes.
 cc_feature(
     name = "hermetic_libraries",
-    cc_flags = ["-nostdinc++"],
     compiler_flags = ["-nostdinc"],
     enabled = True,
     linker_flags = [
@@ -105,11 +107,10 @@ cc_feature(
 # Compilation modes.
 cc_feature(
     name = "opt",
-    compiler_flags = [
-        "-O2",
-        "-flto",
-    ],
-    linker_flags = ["-flto"],
+    implies = select({
+        "@platforms//os:none": ["opt_size"],
+        "//conditions:default": ["opt_standard"],
+    }),
     provides = ["compilation_mode"],
 )
 
@@ -147,7 +148,7 @@ cc_feature(
 cc_toolchain_sysroot_feature(
     name = "sysroot",
     enabled = True,
-    sysroot = "@debian_stretch_amd64_sysroot//:sysroot",
+    sysroot = "@rules_cc_toolchain_config//:sysroot",
 )
 
 cc_feature(
@@ -188,6 +189,152 @@ C_VERSIONS = [
     provides = ["c_standard"],
 ) for c_version in C_VERSIONS]
 
+############################ Standard features ################################
+cc_feature(
+    name = "opt_standard",
+    compiler_flags = [
+        "-O2",
+        "-flto=thin",
+    ],
+    linker_flags = ["-flto=thin"],
+)
+
+########################### Bare-metal features ###############################
+ENABLE_BAREMETAL_FEATURE = select({
+    "@platforms//os:none": True,
+    "//conditions:default": False,
+})
+
+cc_feature(
+    name = "opt_size",
+    compiler_flags = [
+        # Bare-metal applications are generall space constrained optmize for
+        # size.
+        "-Oz",
+        "-flto=thin",
+    ],
+    enabled = False,
+    linker_flags = ["-flto=thin"],
+)
+
+# Tell the compiler to generate code that runs standalone i.e. without an os
+# loading the binary.
+# TODO: Why is this breaking things?
+cc_feature(
+    name = "free_standing_code",
+    compiler_flags = [
+        "-ffreestanding",
+    ],
+    enabled = ENABLE_BAREMETAL_FEATURE,
+)
+
+# We likely only care about float_abi if compiling for bare-metal otherwise
+# we should allow clang to autodetect this for us.
+cc_feature(
+    name = "float_abi",
+    compiler_flags = select({
+        "@embedded_platforms//fpu:hard": ["-mfloat-abi=hard"],
+        "//conditions:default": ["-mfloat-abi=soft"],
+    }),
+    enabled = ENABLE_BAREMETAL_FEATURE,
+)
+
+# In most bare-metal applications we want to remove runtime type information.
+# This significantly reduces the size of the binary at the cost of removing
+# the ability to 'dynamic_cast' between classes.
+cc_feature(
+    name = "no_rtti",
+    cc_flags = [
+        "-fno-rtti",
+        "-fno-exceptions",
+    ],
+    enabled = ENABLE_BAREMETAL_FEATURE,
+)
+
+########################### ARM Specific features #############################
+ENABLE_ARM_FEATURE = selects.with_or({
+    (
+        "@platforms//cpu:arm64",
+        "@platforms//cpu:armv6-m",
+        "@platforms//cpu:armv7-m",
+        "@platforms//cpu:armv7e-m",
+        "@platforms//cpu:armv8-m",
+    ): True,
+    "//conditions:default": False,
+})
+
+cc_feature(
+    name = "thumb_target_triplet",
+    compiler_flags = [
+        "-target thumb-unknown-none-eabi",
+    ],
+    enabled = ENABLE_ARM_FEATURE,
+    linker_flags = [
+        "-target thumb-unknown-none-eabi",
+    ],
+)
+
+ARM_CPU_FLAGS = select({
+    "@platforms//cpu:arm64": ["-march=thumbv8-a"],
+    "@platforms//cpu:armv6-m": ["-march=thumbv6-m"],
+    "@platforms//cpu:armv7-m": ["-march=thumbv7-m"],
+    "@platforms//cpu:armv7e-m": ["-march=thumbv7e-m"],
+    "@platforms//cpu:armv8-m": ["-march=thumbv8-m"],
+    "//conditions:default": [],
+}) + [
+    # Use thumb instruction set instead of ARM. This reduces the resulting
+    # binary size without sacrificing performance.
+    "-mthumb",
+]
+
+cc_feature(
+    name = "arm_cpu",
+    compiler_flags = ARM_CPU_FLAGS,
+    enabled = ENABLE_ARM_FEATURE,
+    linker_flags = ARM_CPU_FLAGS,
+)
+
+ARM_FPUS = [
+    "vfpv2",
+    "vfpv3",
+    "vfpv3_fp16",
+    "vfpv3_d16",
+    "vfpv3_d16_fp16",
+    "vfpv3xd",
+    "vfpv3xd_fp16",
+    "neon_vfpv3",
+    "neon_fp16",
+    "vfpv4",
+    "vfpv4_d16",
+    "fpv4_sp_d16",
+    "neon_vfpv4",
+    "fpv5_d16",
+    "fpv5_sp_d16",
+    "fp_armv8",
+    "neon_fp_armv8",
+    "crypto_neon_fp_armv8",
+    "none",
+]
+
+FPU_FLAGS = select({
+    condition: flags
+    for condition, flags in [
+        (
+            "@embedded_platforms//fpu:" + fpu,
+            ["-mfpu=" + fpu.replace("_", "-")],
+        )
+        for fpu in ARM_FPUS
+    ] + [("//conditions:default", [])]
+})
+
+cc_feature(
+    name = "arm_fpu",
+    compiler_flags = FPU_FLAGS,
+    enabled = ENABLE_ARM_FEATURE,
+    linker_flags = FPU_FLAGS,
+)
+
+################################## Docs #######################################
 stardoc(
     name = "features_doc",
     out = "features_doc.md",

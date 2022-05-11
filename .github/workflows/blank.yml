@@ -36,5 +36,12 @@ jobs:
         run: |
           bazelisk test @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --test_tag_filters=-benchmark
           bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//...
-          bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report 
-
+          bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report
+          bazelisk build @com_github_stmicroelectronics_stm32cubel4//:stm32l4xx_hal_driver @com_github_stmicroelectronics_stm32cubel4//:stm32_cmsis_driver --platforms=//tests:stm32l432xx
+      
+      - name: Bazel build/test internal test repos
+        run: |
+          bazelisk build //...
+          bazelisk build //... --platforms=//tests:cortex_m0
+          bazelisk build //... --platforms=//tests:cortex_m4
+          bazelisk build //... --platforms=//tests:cortex_m7

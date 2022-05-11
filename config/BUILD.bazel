@@ -1,5 +1,10 @@
 load("//cc_toolchain:cc_toolchain_import.bzl", "cc_toolchain_import")
 load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load(
+    "@rules_cc_toolchain//third_party:gcc_arm_none_eabi_10_3_2021_10_x86_64_helpers.bzl",
+    ARM_NONE_EABI_LIB_INFO = "LIB_INFO",
+)
 
 package(
     default_visibility = ["//visibility:public"],
@@ -13,46 +18,70 @@ config_setting(
     ],
 )
 
+[
+    config_setting(
+        name = name,
+        constraint_values = config_info["constraint_values"] + ["@platforms//os:none"],
+    )
+    for name, config_info in ARM_NONE_EABI_LIB_INFO.items()
+]
+
+ARM_NONE_EABI_CONFIGS = tuple(ARM_NONE_EABI_LIB_INFO.keys())
+
+alias(
+    name = "sysroot_multiplexer",
+    actual = selects.with_or({
+        ARM_NONE_EABI_CONFIGS: "@gcc_arm_none_eabi_10_3_2021_07_x86_64_linux//:sysroot",
+        "linux_x86_64": "@debian_stretch_amd64_sysroot//:sysroot",
+    }),
+)
+
 alias(
     name = "libc_multiplexer",
-    actual = select({
+    actual = selects.with_or({
         ":linux_x86_64": "@debian_stretch_amd64_sysroot//:glibc",
+        ARM_NONE_EABI_CONFIGS: "@gcc_arm_none_eabi_10_3_2021_07_x86_64_linux//:c_nano",
     }),
 )
 
 alias(
     name = "libunwind_multiplexer",
-    actual = select({
+    actual = selects.with_or({
         # TODO: Explore using llvm-libunwind statically linked.
         ":linux_x86_64": "@debian_stretch_amd64_sysroot//:gcc",
+        ARM_NONE_EABI_CONFIGS: ":empty",
     }),
 )
 
 alias(
     name = "libc++_multiplexer",
-    actual = select({
+    actual = selects.with_or({
         ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx",
+        ARM_NONE_EABI_CONFIGS: "@gcc_arm_none_eabi_10_3_2021_07_x86_64_linux//:stdcpp_nano",
     }),
 )
 
 alias(
     name = "libc++abi_multiplexer",
-    actual = select({
+    actual = selects.with_or({
         ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx_abi",
+        ARM_NONE_EABI_CONFIGS: ":empty",
     }),
 )
 
 alias(
-    name = "libclang_rt_multiplexer",
-    actual = select({
+    name = "compiler_rt_multiplexer",
+    actual = selects.with_or({
         ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libclang_rt",
+        ARM_NONE_EABI_CONFIGS: "@gcc_arm_none_eabi_10_3_2021_07_x86_64_linux//:gcc",
     }),
 )
 
 alias(
-    name = "startup_libs",
-    actual = select({
+    name = "startup_libs_multiplexer",
+    actual = selects.with_or({
         ":linux_x86_64": "@debian_stretch_amd64_sysroot//:startup_libs",
+        ARM_NONE_EABI_CONFIGS: "@gcc_arm_none_eabi_10_3_2021_07_x86_64_linux//:startup_libs",
         "//conditions:default": ":empty",
     }),
 )

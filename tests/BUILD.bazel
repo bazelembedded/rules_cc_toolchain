@@ -1,28 +1,130 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
+load(
+    "@rules_cc//cc:defs.bzl",
+    "cc_binary",
+    "cc_library",
+    "cc_test",
+)
+load(":test_arch_output.bzl", "correct_architecture_test")
+
+COMPATIBLE_WITH_HOST_OS = select({
+    "@platforms//os:linux": [],
+    "@platforms//os:windows": [],
+    "@platforms//os:macos": [],
+    "//conditions:default": ["@platforms//:incompatible"],
+})
 
 cc_binary(
     name = "hello_world",
     srcs = ["hello_world.cc"],
+    target_compatible_with = COMPATIBLE_WITH_HOST_OS,
 )
 
 # Build more than one test to ensure that code coverage is generated.
 cc_test(
     name = "dummy_test1",
+    size = "small",
     srcs = ["dummy_test1.cc"],
+    target_compatible_with = COMPATIBLE_WITH_HOST_OS,
 )
 
 cc_test(
     name = "dummy_test2",
+    size = "small",
     srcs = ["dummy_test2.cc"],
+    target_compatible_with = COMPATIBLE_WITH_HOST_OS,
 )
 
 # This is an intentionally buggy binary to test static analysis.
 cc_binary(
     name = "dereferencing_null_pointer",
     srcs = ["dereferencing_null_pointer.cc"],
+    target_compatible_with = COMPATIBLE_WITH_HOST_OS,
 )
 
 cc_binary(
     name = "c_only",
     srcs = ["c_only.c"],
+)
+
+cc_library(
+    name = "arm_assembly_test",
+    srcs = ["startup_stm32l432xx.S"],
+    target_compatible_with = ["@platforms//cpu:armv7e-m"],
+)
+
+correct_architecture_test(
+    name = "cortex_m4_test",
+    size = "small",
+    build_for_platform = "//tests:cortex_m4",
+    llvm_architecture_info_contains = [
+        "ARM v7E-M",
+        "cortex-m4",
+        "Microcontroller",
+    ],
+    target = ":c_only",
+)
+
+correct_architecture_test(
+    name = "cortex_m0_test",
+    size = "small",
+    build_for_platform = "//tests:cortex_m0",
+    llvm_architecture_info_contains = [
+        "ARM v6S-M",
+        "cortex-m0",
+        "Microcontroller",
+    ],
+    target = ":c_only",
+)
+
+# It is not uncommon for an embedded platform to not support floating point
+# operations, in hardware. One approach is to use the a compiler runtime that
+# provides a fallback implementation in software. This target is to test that
+# this functionality works as expected.
+cc_binary(
+    name = "embedded_floating_point_runtime_test",
+    srcs = ["uses_single_precision_floating_point.c"],
+)
+
+# Same as note on ':embedded_floating_point_runtime_test' but for double.
+cc_binary(
+    name = "embedded_double_precision_runtime_test",
+    srcs = ["uses_double_precision_floating_point.c"],
+)
+
+platform(
+    name = "cortex_m7",
+    constraint_values = [
+        "@platforms//cpu:armv7e-m",
+        "@embedded_platforms//fpu:fpv5_d16",
+        "@embedded_platforms//fpu:hard",
+        "@platforms//os:none",
+    ],
+)
+
+platform(
+    name = "cortex_m4",
+    constraint_values = [
+        "@platforms//cpu:armv7e-m",
+        "@embedded_platforms//fpu:none",
+        "@platforms//os:none",
+    ],
+)
+
+platform(
+    name = "stm32l432xx",
+    constraint_values = [
+        "@com_github_stmicroelectronics_stm32cubel4//:stm32l432",
+    ],
+    parents = [
+        ":cortex_m4",
+    ],
+)
+
+platform(
+    name = "cortex_m0",
+    constraint_values = [
+        "@platforms//cpu:armv6-m",
+        "@embedded_platforms//fpu:none",
+        "@platforms//os:none",
+    ],
 )

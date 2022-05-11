@@ -47,6 +47,10 @@ build --incompatible_require_linker_input_cc_api
 # Use new cc toolchain resolution api
 build --incompatible_enable_cc_toolchain_resolution
 
+# Enable transitions for toolchains. Required for ARM toolchain to work 
+# correctly.
+build --incompatible_override_toolchain_transition
+
 # Code coverage support
 coverage --combined_report=lcov
 coverage --experimental_use_llvm_covmap

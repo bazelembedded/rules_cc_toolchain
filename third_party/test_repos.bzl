@@ -1,4 +1,5 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def test_repos():
     """ Pulls in dev dependencies to test the compiler against
@@ -46,4 +47,11 @@ def test_repos():
                 "https://mirror.bazel.build/github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz",
                 "https://github.com/protocolbuffers/protobuf/archive/v3.19.1.tar.gz",
             ],
+        )
+
+    if "com_github_stmicroelectronics_stm32cubel4" not in native.existing_rules():
+        git_repository(
+            name = "com_github_stmicroelectronics_stm32cubel4",
+            remote = "https://github.com/silvergasp/STM32CubeL4.git",
+            commit = "44995541777cccba30d002f4e4578fca9c541c3f",
         )

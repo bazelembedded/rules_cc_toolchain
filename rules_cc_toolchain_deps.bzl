@@ -70,3 +70,26 @@ def rules_cc_toolchain_deps():
         rules_cc_toolchain_config(
             name = "rules_cc_toolchain_config",
         )
+
+    # Setup set of embedded platforms for toolchains.
+    # Required by: rules_cc_toolchain.
+    # Required by modules: cc_toolchain.
+    if "embedded_platforms" not in native.existing_rules():
+        git_repository(
+            name = "embedded_platforms",
+            remote = "https://github.com/silvergasp/embedded_platforms.git",
+            commit = "350fc172ade372cd686bdaa45029b3103c74f13f",
+            shallow_since = "1638948172 +0800",
+        )
+
+    # Set up newlib-nano libc and libstdc++, currently not using arm-none-eabi-gcc.
+    # Required by: rules_cc_toolchain.
+    # Required by modules: cc_toolchain.
+    if "gcc_arm_none_eabi_10_3_2021_07_x86_64_linux" not in native.existing_rules():
+        http_archive(
+            name = "gcc_arm_none_eabi_10_3_2021_07_x86_64_linux",
+            url = "https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2",
+            sha256 = "97dbb4f019ad1650b732faffcc881689cedc14e2b7ee863d390e0a41ef16c9a3",
+            build_file = "@rules_cc_toolchain//third_party:gcc_arm_none_eabi_10_3_2021_10_x86_64_linux.BUILD",
+            strip_prefix = "gcc-arm-none-eabi-10.3-2021.10",
+        )

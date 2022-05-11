@@ -29,7 +29,7 @@ label_flag(
 
 label_flag(
     name = "compiler_rt",
-    build_setting_default = "@rules_cc_toolchain//config:libclang_rt_multiplexer",
+    build_setting_default = "@rules_cc_toolchain//config:compiler_rt_multiplexer",
 )
 
 label_flag(
@@ -39,7 +39,12 @@ label_flag(
 
 label_flag(
     name = "startup_libs",
-    build_setting_default = "@rules_cc_toolchain//config:startup_libs",
+    build_setting_default = "@rules_cc_toolchain//config:startup_libs_multiplexer",
+)
+
+label_flag(
+    name = "sysroot",
+    build_setting_default = "@rules_cc_toolchain//config:sysroot_multiplexer",
 )
 
 label_flag(

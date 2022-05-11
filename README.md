@@ -26,7 +26,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
     name = "rules_cc_toolchain",
     commit = "dd9265e3ce0daa444911040430bd716076869b34",
-    remote = "https://github.com/silvergasp/rules_cc_toolchain.git",
+    remote = "https://github.com/bazelembedded/rules_cc_toolchain.git",
 )
 
 load("@rules_cc_toolchain//:rules_cc_toolchain_deps.bzl", "rules_cc_toolchain_deps")

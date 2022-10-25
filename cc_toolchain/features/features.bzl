@@ -153,6 +153,10 @@ def _cc_toolchain_import_feature_impl(ctx):
         "-L" + file.dirname
         for file in toolchain_import_info
             .linking_context.dynamic_libraries.to_list()
+    ] + [
+        "-L" + file.dirname
+        for file in toolchain_import_info
+            .linking_context.additional_libs.to_list()
     ]).to_list()
 
     lib_prefix = "lib"

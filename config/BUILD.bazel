@@ -29,6 +29,13 @@ alias(
 )
 
 alias(
+    name = "pthread_multiplexer",
+    actual = select({
+        ":linux_x86_64": "@debian_stretch_amd64_sysroot//:pthread",
+    }),
+)
+
+alias(
     name = "libc++_multiplexer",
     actual = select({
         ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx",

@@ -137,18 +137,22 @@ def _cc_toolchain_import_impl(ctx):
         depset(
             shared_library_list,
             transitive = transitive_shared_libraries,
+            order = "topological",
         ),
         depset(
             static_library_list,
             transitive = transitive_static_libraries,
+            order = "topological",
         ),
         depset(
             runtime_paths,
             transitive = transitive_runtime_paths,
+            order = "topological",
         ),
         depset(
             ctx.files.additional_libs,
             transitive = transitive_additional_libs,
+            order = "topological",
         ),
     )
     library_files = []
@@ -169,6 +173,7 @@ def _cc_toolchain_import_impl(ctx):
                                          transitive_hdrs +
                                          transitive_additional_libs +
                                          transitive_injected_hdrs,
+                            order = "topological",
                         )),
         _cc_toolchain_import(compilation_context, linking_context),
     ]

@@ -13,6 +13,11 @@ label_flag(
 )
 
 label_flag(
+    name = "libpthread",
+    build_setting_default = "@rules_cc_toolchain//config:pthread_multiplexer",
+)
+
+label_flag(
     name = "libunwind",
     build_setting_default = "@rules_cc_toolchain//config:libunwind_multiplexer",
 )

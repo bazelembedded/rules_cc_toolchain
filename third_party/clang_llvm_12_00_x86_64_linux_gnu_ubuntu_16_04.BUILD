@@ -66,9 +66,6 @@ cc_toolchain_import(
 cc_toolchain_import(
     name = "llvm_libcxx",
     hdrs = glob(["include/c++/v1/**"]),
-    additional_libs = [
-        "lib/libc++.so.1",
-    ],
     includes = ["include/c++/v1"],
     static_library = "lib/libc++.a",
     target_compatible_with = select({
@@ -94,6 +91,7 @@ cc_toolchain_import(
     visibility = ["@rules_cc_toolchain//config:__pkg__"],
     deps = [
         "@rules_cc_toolchain_config//:libc",
+        "@rules_cc_toolchain_config//:libpthread",
     ],
 )
 

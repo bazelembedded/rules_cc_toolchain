@@ -18,3 +18,7 @@ coverage --incompatible_cc_coverage
 
 # Static analyser support 
 build:analyser --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report 
+
+# Enable transitions for toolchains. Required for ARM toolchain to work 
+# correctly.
+build --incompatible_override_toolchain_transition

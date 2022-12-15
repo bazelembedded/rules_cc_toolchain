@@ -19,9 +19,10 @@ INCLUDES = [
 ]
 
 CRT_OBJECTS = [
-    "crt1",
     "crti",
     "crtn",
+    # Use PIC Scrt1.o instead of crt1.o to keep PIC code from segfaulting.
+    "Scrt1",
 ]
 
 [

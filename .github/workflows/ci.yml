@@ -14,10 +14,31 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+
+  fetch_test_deps:
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Mount bazel repository cache
+        uses: actions/cache@v3
+        with:
+          path: "~/bazel/repository_cache"
+          key: ${{ runner.os }}-bazel
+
+      - name: Fetch external test deps
+        run: |
+          bazelisk --bazelrc=ci.bazelrc fetch @com_google_googletest//... \
+            @com_github_google_benchmark//... \
+            @com_google_absl//...
+
   build_and_test:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
+    needs: fetch_test_deps
     strategy:
       matrix:
         lib:
@@ -28,18 +49,33 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Mount bazel cache
-        uses: actions/cache@v2
+      - name: Mount bazel build cache
+        uses: actions/cache@v3
         with:
-          path: "~/.cache/bazel"
-          key: ${{ runner.os }}-${{ matrix.lib }}-bazel
+          path: "~/bazel/disk_cache"
+          key: ${{ matrix.lib }}-${{ runner.os }}-bazel
+
+      - name: Mount bazel repository cache
+        uses: actions/cache@v3
+        with:
+          path: "~/bazel/repository_cache"
+          key: ${{ runner.os }}-bazel
 
       # Runs a single command using the runners shell
       - name: Bazel build/test external test repos
         run: |
-          bazelisk test ${{ matrix.lib }} --test_tag_filters=-benchmark
-          bazelisk build ${{ matrix.lib }}
-          bazelisk build ${{ matrix.lib }} --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report
+          bazelisk --bazelrc=ci.bazelrc test ${{ matrix.lib }}
+          bazelisk --bazelrc=ci.bazelrc build ${{ matrix.lib }}
+          bazelisk --bazelrc=ci.bazelrc build ${{ matrix.lib }} --config analyser
 
+  ci-success:
+    name: ci
+    if: ${{ success() }}
+    needs:
+      - build_and_test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: CI succeeded
+        run: exit 0

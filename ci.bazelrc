@@ -1,0 +1,4 @@
+# Caching
+build --disk_cache=~/bazel/disk_cache
+build --repository_cache=~/bazel/repository_cache
+test --test_tag_filters=-benchmark

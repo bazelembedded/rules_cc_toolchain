@@ -4,11 +4,10 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [main, staging, trying]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,9 +15,15 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build_and_test:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        lib:
+          - "@com_google_googletest//..."
+          - "@com_github_google_benchmark//..."
+          - "@com_google_absl//..."
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,13 +33,13 @@ jobs:
       - name: Mount bazel cache
         uses: actions/cache@v2
         with:
-          path: "/home/runner/.cache/bazel"
-          key: ${{ runner.os }}-bazel
+          path: "~/.cache/bazel"
+          key: ${{ runner.os }}-${{ matrix.lib }}-bazel
 
       # Runs a single command using the runners shell
       - name: Bazel build/test external test repos
         run: |
-          bazelisk test @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --test_tag_filters=-benchmark
-          bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//...
-          bazelisk build @com_google_googletest//... @com_github_google_benchmark//... @com_google_absl//... --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report 
+          bazelisk test ${{ matrix.lib }} --test_tag_filters=-benchmark
+          bazelisk build ${{ matrix.lib }}
+          bazelisk build ${{ matrix.lib }} --aspects //tools/clang_tidy:clang_tidy.bzl%clang_tidy_aspect --output_groups=report
 

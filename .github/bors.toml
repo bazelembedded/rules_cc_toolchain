@@ -1,0 +1,6 @@
+block_labels = ["needs-decision"]
+delete_merged_branches = true
+status = [
+  "build_and_test",
+]
+timeout_sec = 7200

@@ -64,8 +64,25 @@ cc_toolchain_import(
 )
 
 cc_toolchain_import(
+    name = "llvm_libstddef",
+    hdrs = glob(["lib/clang/*/include/stddef.h"]),
+    includes = ["lib/clang/15.0.6/include"],
+    # runtime_path = "/usr/lib/x86_64-linux-gnu",
+    # shared_library = "lib/libunwind.so",
+    # static_library = "lib/x86_64-unknown-linux-gnu/libunwind.a",
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["@rules_cc_toolchain//config:__pkg__"],
+    deps = [
+        "@rules_cc_toolchain_config//:libc",
+    ],
+)
+
+cc_toolchain_import(
     name = "llvm_libcxx",
-    hdrs = glob(["include/c++/v1/**", "include/x86_64-unknown-linux-gnu/c++/v1/**"]),
+    hdrs = glob(["include/c++/v1/**"]),
     includes = ["include/c++/v1"],
     static_library = "lib/x86_64-unknown-linux-gnu/libc++.a",
     target_compatible_with = select({
@@ -74,9 +91,23 @@ cc_toolchain_import(
     }),
     visibility = ["@rules_cc_toolchain//config:__pkg__"],
     deps = [
+        # TODO: Add more indirection.
+        ":llvm_config_site",
+        ":llvm_libstddef",
         "@rules_cc_toolchain_config//:libc",
         "@rules_cc_toolchain_config//:libunwind",
     ],
+)
+
+cc_toolchain_import(
+    name = "llvm_config_site",
+    hdrs = ["include/x86_64-unknown-linux-gnu/c++/v1/__config_site"],
+    includes = ["include/x86_64-unknown-linux-gnu/c++/v1"],
+    target_compatible_with = select({
+        "@platforms//os:linux": ["@platforms//cpu:x86_64"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["@rules_cc_toolchain//config:__pkg__"],
 )
 
 cc_toolchain_import(

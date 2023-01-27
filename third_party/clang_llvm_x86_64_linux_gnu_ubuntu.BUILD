@@ -49,7 +49,7 @@ filegroup(
 cc_toolchain_import(
     name = "llvm_libunwind",
     hdrs = glob(["lib/clang/*/include/unwind.h"]),
-    includes = glob(["lib/clang/*/include"]),
+    includes = ["lib/clang/15.0.6/include"],
     runtime_path = "/usr/lib/x86_64-linux-gnu",
     shared_library = "lib/libunwind.so",
     static_library = "lib/x86_64-unknown-linux-gnu/libunwind.a",
@@ -93,7 +93,7 @@ cc_toolchain_import(
     deps = [
         # TODO: Add more indirection.
         ":llvm_config_site",
-        ":llvm_libstddef",
+        # ":llvm_libstddef",
         "@rules_cc_toolchain_config//:libc",
         "@rules_cc_toolchain_config//:libunwind",
     ],
@@ -133,10 +133,10 @@ cc_toolchain_import(
         "lib/clang/*/include/*.h",
         "lib/clang/*/include/**/*.h",
     ]),
-    includes = glob([
-        "lib/clang/*",
-        "lib/clang/*/include",
-    ]),
+    includes = [
+        "lib/clang/15.0.6",
+        "lib/clang/15.0.6/include",
+    ],
     # TODO: Last place where the version is hardcoded :/
     static_library = "lib/clang/15.0.6/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a",
     target_compatible_with = select({

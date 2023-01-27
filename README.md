@@ -61,8 +61,8 @@ This repository provides a set of sane defaults to make up a
 | Library           | Provider                                           |
 | ----------------- | -------------------------------------------------- |
 | libc              | Debian stretch sysroot (GNU glibc6)                |
-| libc++            | LLVM 12.0.0 libc++                                 |
-| libc++abi         | LLVM 12.0.0 libc++abi                              |
+| libc++            | LLVM 15.0.7 libc++                                 |
+| libc++abi         | LLVM 15.0.7 libc++abi                              |
 | libunwind         | Debian stretch sysroot (GNU gcc6 compiler runtime) |
 | Startup Libraries | Debian stretch libcrt (GNU glibc6)                 |
 
@@ -80,25 +80,25 @@ An example of how you might include your own version of libc++ is shown below.
 Add a third_party dependency directory for your libc++ build definitions.
 ``` sh
 mkdir third_party
-touch third_party/clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04.BUILD
+touch third_party/clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04.BUILD
 ```
 
 Add the following to your WORKSPACE file.
 ``` py
 # WORKSPACE
 http_archive(
-    name = "clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04",
-    build_file = "//third_party:clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04.BUILD",
+    name = "clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04",
+    build_file = "//third_party:clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04.BUILD",
     sha256 = "9694f4df031c614dbe59b8431f94c68631971ad44173eecc1ea1a9e8ee27b2a3",
-    strip_prefix = "clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04",
-    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz",
+    strip_prefix = "clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04",
+    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz",
 )
 ```
 
 From here you will need to add in your definitions that specify the library
 files that are provided by this implementation of libc++.
 ``` py
-# third_party:clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04.BUILD
+# third_party:clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04.BUILD
 load(
     "@rules_cc_toolchain//cc_toolchain:cc_toolchain_import.bzl",
     "cc_toolchain_import",
@@ -151,7 +151,7 @@ cc_toolchain_import(
 Now we can test the new toolchain to ensure that it functions correctly. 
 ``` sh
 bazel coverage @rules_cc_toolchain//tests/... \
- --@rules_cc_toolchain_config//:libc++=@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx
+ --@rules_cc_toolchain_config//:libc++=@clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04//:llvm_libcxx
 ```
 
 **NOTE:** While the toolchain itself is hermetic the runtime linkage is not in 
@@ -173,11 +173,11 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04",
-    build_file = "//third_party:clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04.BUILD",
+    name = "clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04",
+    build_file = "//third_party:clang_llvm_15_06_x86_64_linux_gnu_ubuntu_18_04.BUILD",
     sha256 = "9694f4df031c614dbe59b8431f94c68631971ad44173eecc1ea1a9e8ee27b2a3",
-    strip_prefix = "clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04",
-    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz",
+    strip_prefix = "clang+llvm-15.0.7-x86_64-linux-gnu-ubuntu-16.04",
+    url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.7/clang+llvm-15.0.7-x86_64-linux-gnu-ubuntu-16.04.tar.xz",
 )
 
 # Set up host hermetic host toolchain.

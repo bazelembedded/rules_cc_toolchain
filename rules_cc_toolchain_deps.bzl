@@ -22,13 +22,13 @@ def rules_cc_toolchain_deps():
     # Setup clang compiler files.
     # Required by: rules_cc_toolchain.
     # Used by modules: cc_toolchain.
-    if "clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04" not in native.existing_rules():
+    if "clang_llvm_x86_64_linux_gnu_ubuntu" not in native.existing_rules():
         http_archive(
-            name = "clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04",
-            url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz",
-            sha256 = "9694f4df031c614dbe59b8431f94c68631971ad44173eecc1ea1a9e8ee27b2a3",
-            build_file = "@rules_cc_toolchain//third_party:clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04.BUILD",
-            strip_prefix = "clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04",
+            name = "clang_llvm_x86_64_linux_gnu_ubuntu",
+            url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-15.0.6/clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04.tar.xz",
+            sha256 = "38bc7f5563642e73e69ac5626724e206d6d539fbef653541b34cae0ba9c3f036",
+            build_file = "@rules_cc_toolchain//third_party:clang_llvm_x86_64_linux_gnu_ubuntu.BUILD",
+            strip_prefix = "clang+llvm-15.0.6-x86_64-linux-gnu-ubuntu-18.04",
         )
 
     # Setup os normalisation tools.

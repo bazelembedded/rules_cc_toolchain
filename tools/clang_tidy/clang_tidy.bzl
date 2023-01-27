@@ -156,7 +156,7 @@ clang_tidy_aspect = aspect(
     attrs = {
         "_clang_tidy": attr.label(
             allow_single_file = True,
-            default = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/clang-tidy",
+            default = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/clang-tidy",
             cfg = "exec",
             executable = True,
         ),

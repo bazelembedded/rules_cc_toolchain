@@ -48,11 +48,11 @@ filegroup(
 
 cc_toolchain_import(
     name = "llvm_libunwind",
-    hdrs = ["lib/clang/12.0.0/include/unwind.h"],
-    includes = ["lib/clang/12.0.0/include"],
+    hdrs = glob(["lib/clang/*/include/unwind.h"]),
+    includes = glob(["lib/clang/*/include"]),
     runtime_path = "/usr/lib/x86_64-linux-gnu",
     shared_library = "lib/libunwind.so",
-    static_library = "lib/libunwind.a",
+    static_library = "lib/x86_64-unknown-linux-gnu/libunwind.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
@@ -65,9 +65,9 @@ cc_toolchain_import(
 
 cc_toolchain_import(
     name = "llvm_libcxx",
-    hdrs = glob(["include/c++/v1/**"]),
+    hdrs = glob(["include/c++/v1/**", "include/x86_64-unknown-linux-gnu/c++/v1/**"]),
     includes = ["include/c++/v1"],
-    static_library = "lib/libc++.a",
+    static_library = "lib/x86_64-unknown-linux-gnu/libc++.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
@@ -83,7 +83,7 @@ cc_toolchain_import(
     name = "llvm_libcxx_abi",
     hdrs = glob(["include/c++/v1/**"]),
     includes = ["include/c++/v1"],
-    static_library = "lib/libc++abi.a",
+    static_library = "lib/x86_64-unknown-linux-gnu/libc++abi.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],
@@ -98,15 +98,16 @@ cc_toolchain_import(
 cc_toolchain_import(
     name = "llvm_libclang_rt",
     hdrs = glob([
-        "lib/clang/12.0.0/*.h",
-        "lib/clang/12.0.0/include/*.h",
-        "lib/clang/12.0.0/include/**/*.h",
+        "lib/clang/*/*.h",
+        "lib/clang/*/include/*.h",
+        "lib/clang/*/include/**/*.h",
     ]),
-    includes = [
-        "lib/clang/12.0.0",
-        "lib/clang/12.0.0/include",
-    ],
-    static_library = "lib/clang/12.0.0/lib/linux/libclang_rt.builtins-x86_64.a",
+    includes = glob([
+        "lib/clang/*",
+        "lib/clang/*/include",
+    ]),
+    # TODO: Last place where the version is hardcoded :/
+    static_library = "lib/clang/15.0.6/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a",
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],

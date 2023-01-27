@@ -38,21 +38,21 @@ alias(
 alias(
     name = "libc++_multiplexer",
     actual = select({
-        ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx",
+        ":linux_x86_64": "@clang_llvm_x86_64_linux_gnu_ubuntu//:llvm_libcxx",
     }),
 )
 
 alias(
     name = "libc++abi_multiplexer",
     actual = select({
-        ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libcxx_abi",
+        ":linux_x86_64": "@clang_llvm_x86_64_linux_gnu_ubuntu//:llvm_libcxx_abi",
     }),
 )
 
 alias(
     name = "libclang_rt_multiplexer",
     actual = select({
-        ":linux_x86_64": "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:llvm_libclang_rt",
+        ":linux_x86_64": "@clang_llvm_x86_64_linux_gnu_ubuntu//:llvm_libclang_rt",
     }),
 )
 

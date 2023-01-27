@@ -3,7 +3,7 @@ package(default_visibility = ["//visibility:public"])
 # Compilers
 label_flag(
     name = "clang",
-    build_setting_default = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:all",
+    build_setting_default = "@clang_llvm_x86_64_linux_gnu_ubuntu//:all",
 )
 
 # Libraries

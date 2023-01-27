@@ -28,7 +28,7 @@ filegroup(
         ":all_imports",
         "//cc_toolchain/features:startup_libs",
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:all",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:all",
     ],
 )
 
@@ -36,7 +36,7 @@ filegroup(
     name = "ar_files",
     srcs = [
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:ar_files",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:ar_files",
     ],
 )
 
@@ -45,7 +45,7 @@ filegroup(
     srcs = [
         ":all_imports",
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:compiler_files",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:compiler_files",
     ],
 )
 
@@ -55,7 +55,7 @@ filegroup(
         ":compiler_files",
         "//cc_toolchain/features:startup_libs",
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:linker_files",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:linker_files",
     ],
 )
 
@@ -63,7 +63,7 @@ filegroup(
     name = "objcopy_files",
     srcs = [
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:objcopy_files",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:objcopy_files",
     ],
 )
 
@@ -71,7 +71,7 @@ filegroup(
     name = "strip_files",
     srcs = [
         "//cc_toolchain/wrappers:all",
-        "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:strip_files",
+        "@clang_llvm_x86_64_linux_gnu_ubuntu//:strip_files",
     ],
 )
 
@@ -91,9 +91,9 @@ cc_toolchain(
 
 cc_toolchain_config(
     name = "linux_x86_64_toolchain_config",
-    archiver = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-ar",
-    c_compiler = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/clang",
-    cc_compiler = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/clang++",
+    archiver = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/llvm-ar",
+    c_compiler = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/clang",
+    cc_compiler = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/clang++",
     compiler_features = [
         # Hermetic libraries feature required before import.
         "//cc_toolchain/features:hermetic_libraries",
@@ -121,9 +121,9 @@ cc_toolchain_config(
         "//cc_toolchain/features:c++17",
         "//cc_toolchain/features:c++20",
     ],
-    linker = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/ld.lld",
-    object_dump_tool = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-objdump",
-    symbol_list_tool = "@clang_llvm_12_00_x86_64_linux_gnu_ubuntu_16_04//:bin/llvm-nm",
+    linker = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/ld.lld",
+    object_dump_tool = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/llvm-objdump",
+    symbol_list_tool = "@clang_llvm_x86_64_linux_gnu_ubuntu//:bin/llvm-nm",
 )
 
 toolchain(

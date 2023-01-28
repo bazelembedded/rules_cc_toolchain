@@ -16,9 +16,11 @@ def test_repos():
     if "com_google_googletest" not in native.existing_rules():
         http_archive(
             name = "com_google_googletest",
-            sha256 = "9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb",
-            strip_prefix = "googletest-release-1.10.0",
-            urls = ["https://github.com/google/googletest/archive/release-1.10.0.tar.gz"],
+            sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
+            strip_prefix = "googletest-1.13.0",
+            urls = [
+                "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
+            ],
         )
 
     if "com_github_google_benchmark" not in native.existing_rules():
@@ -32,9 +34,9 @@ def test_repos():
     if "com_google_absl" not in native.existing_rules():
         http_archive(
             name = "com_google_absl",
-            sha256 = "0db0d26f43ba6806a8a3338da3e646bb581f0ca5359b3a201d8fb8e4752fd5f8",
-            strip_prefix = "abseil-cpp-20200225.1",
-            urls = ["https://github.com/abseil/abseil-cpp/archive/20200225.1.tar.gz"],
+            sha256 = "3ea49a7d97421b88a8c48a0de16c16048e17725c7ec0f1d3ea2683a2a75adc21",
+            strip_prefix = "abseil-cpp-20230125.0",
+            urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.0.tar.gz"],
         )
 
     if "com_google_protobuf" not in native.existing_rules():

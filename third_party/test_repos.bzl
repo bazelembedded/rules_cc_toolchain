@@ -13,6 +13,15 @@ def test_repos():
             sha256 = "cd6730ed53a002c56ce4e2f396ba3b3be262fd7cb68339f0377a45e8227fe332",
         )
 
+    if "com_googlesource_code_re2" not in native.existing_rules():
+        # Dependency of googletest
+        http_archive(
+            name = "com_googlesource_code_re2",  # 2022-12-21T14:29:10Z
+            sha256 = "b9ce3a51beebb38534d11d40f8928d40509b9e18a735f6a4a97ad3d014c87cb5",
+            strip_prefix = "re2-d0b1f8f2ecc2ea74956c7608b6f915175314ff0e",
+            urls = ["https://github.com/google/re2/archive/d0b1f8f2ecc2ea74956c7608b6f915175314ff0e.zip"],
+        )
+
     if "com_google_googletest" not in native.existing_rules():
         http_archive(
             name = "com_google_googletest",

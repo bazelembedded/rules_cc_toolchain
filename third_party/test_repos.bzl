@@ -16,10 +16,10 @@ def test_repos():
     if "com_google_googletest" not in native.existing_rules():
         http_archive(
             name = "com_google_googletest",
-            sha256 = "ad7fdba11ea011c1d925b3289cf4af2c66a352e18d4c7264392fead75e919363",
-            strip_prefix = "googletest-1.13.0",
+            sha256 = "564f89e499a99e85a481122d22b2e3e7a8f6e8b8809a64363f96edd2b2ee2979",
+            strip_prefix = "googletest-1.12.0",
             urls = [
-                "https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz",
+                "https://github.com/google/googletest/archive/refs/tags/v1.12.0.tar.gz",
             ],
         )
 

@@ -10,12 +10,10 @@ load("//:rules_cc_toolchain_deps.bzl", "rules_cc_toolchain_deps")
 # Required by: rules_cc_toolchain.
 # Required by modules: tools.
 http_archive(
-    name = "bazel_skylib",
-    sha256 = "c6966ec828da198c5d9adbaa94c05e3a1c7f21bd012a0b29ba8ddbccb2c93b0d",
-    urls = [
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.1.1/bazel-skylib-1.1.1.tar.gz",
-    ],
+    name = "bazel_skylib",  # 2022-09-01
+    sha256 = "4756ab3ec46d94d99e5ed685d2d24aece484015e45af303eb3a11cab3cdc2e71",
+    strip_prefix = "bazel-skylib-1.3.0",
+    urls = ["https://github.com/bazelbuild/bazel-skylib/archive/refs/tags/1.3.0.zip"],
 )
 
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")

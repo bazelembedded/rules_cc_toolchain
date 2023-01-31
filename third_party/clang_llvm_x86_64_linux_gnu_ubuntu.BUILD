@@ -5,6 +5,8 @@ load(
 
 exports_files(glob(["bin/*"]))
 
+CLANG_VERSION = "15.0.6"
+
 filegroup(
     name = "all",
     srcs = glob(["**/*"]),
@@ -49,7 +51,7 @@ filegroup(
 cc_toolchain_import(
     name = "llvm_libunwind",
     hdrs = glob(["lib/clang/*/include/unwind.h"]),
-    includes = ["lib/clang/15.0.6/include"],
+    includes = ["lib/clang/{clang_version}/include".format(clang_version = CLANG_VERSION)],
     runtime_path = "/usr/lib/x86_64-linux-gnu",
     shared_library = "lib/libunwind.so",
     static_library = "lib/x86_64-unknown-linux-gnu/libunwind.a",
@@ -66,7 +68,7 @@ cc_toolchain_import(
 cc_toolchain_import(
     name = "llvm_libstddef",
     hdrs = glob(["lib/clang/*/include/stddef.h"]),
-    includes = ["lib/clang/15.0.6/include"],
+    includes = ["lib/clang/{clang_version}/include".format(clang_version = CLANG_VERSION)],
     # runtime_path = "/usr/lib/x86_64-linux-gnu",
     # shared_library = "lib/libunwind.so",
     # static_library = "lib/x86_64-unknown-linux-gnu/libunwind.a",
@@ -134,11 +136,10 @@ cc_toolchain_import(
         "lib/clang/*/include/**/*.h",
     ]),
     includes = [
-        "lib/clang/15.0.6",
-        "lib/clang/15.0.6/include",
+        "lib/clang/{clang_version}".format(clang_version = CLANG_VERSION),
+        "lib/clang/{clang_version}/include".format(clang_version = CLANG_VERSION),
     ],
-    # TODO: Last place where the version is hardcoded :/
-    static_library = "lib/clang/15.0.6/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a",
+    static_library = "lib/clang/{clang_version}/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a".format(clang_version = CLANG_VERSION),
     target_compatible_with = select({
         "@platforms//os:linux": ["@platforms//cpu:x86_64"],
         "//conditions:default": ["@platforms//:incompatible"],

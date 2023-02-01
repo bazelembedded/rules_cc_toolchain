@@ -39,6 +39,7 @@ def rules_cc_toolchain_deps():
             name = "rules_os",
             commit = "68cdf228f8449a2b42b3a7b6d65395af74a007d7",
             remote = "https://github.com/silvergasp/rules_os.git",
+            shallow_since = "1624010567 +0800",
         )
 
     # Setup x64 linux sysroot

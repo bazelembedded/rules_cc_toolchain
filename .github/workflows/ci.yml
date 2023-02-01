@@ -32,7 +32,6 @@ jobs:
       - name: Fetch external test deps
         run: |
           bazelisk --bazelrc=ci.bazelrc fetch @com_google_googletest//... \
-            @com_github_google_benchmark//... \
             @com_google_absl//...
 
   build_and_test:
@@ -43,7 +42,6 @@ jobs:
       matrix:
         lib:
           - "@com_google_googletest//..."
-          - "@com_github_google_benchmark//..."
           - "@com_google_absl//..."
 
     # Steps represent a sequence of tasks that will be executed as part of the job

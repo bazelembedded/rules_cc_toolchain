@@ -31,6 +31,7 @@ git_repository(
     name = "io_bazel_stardoc",
     commit = "8f6d22452d088b49b13ba2c224af69ccc8ccbc90",
     remote = "https://github.com/bazelbuild/stardoc.git",
+    shallow_since = "1620849756 -0400",
 )
 
 # Sets up Bazels packaging rules, for use the document generator.

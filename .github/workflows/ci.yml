@@ -48,7 +48,7 @@ jobs:
         run: |
           bazelisk --bazelrc=ci.bazelrc test ${{ matrix.lib }}
           bazelisk --bazelrc=ci.bazelrc build ${{ matrix.lib }}
-          bazelisk --bazelrc=ci.bazelrc --config analyser build ${{ matrix.lib }}
+          bazelisk --bazelrc=ci.bazelrc build --config analyser ${{ matrix.lib }}
 
   ci-success:
     name: ci

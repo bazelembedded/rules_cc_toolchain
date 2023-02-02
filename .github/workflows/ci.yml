@@ -15,29 +15,9 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  fetch_test_deps:
-    runs-on: ubuntu-20.04
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      - name: Mount bazel repository cache
-        uses: actions/cache@v3
-        with:
-          path: "~/bazel/repository_cache"
-          key: ${{ runner.os }}-bazel
-
-      - name: Fetch external test deps
-        run: |
-          bazelisk --bazelrc=ci.bazelrc fetch @com_google_googletest//... \
-            @com_google_absl//...
-
   build_and_test:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-    needs: fetch_test_deps
     strategy:
       matrix:
         lib:

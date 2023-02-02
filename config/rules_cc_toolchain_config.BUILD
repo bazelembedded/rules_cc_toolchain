@@ -33,6 +33,11 @@ label_flag(
 )
 
 label_flag(
+    name = "llvm_config_site",
+    build_setting_default = "@rules_cc_toolchain//config:llvm_config_site_multiplexer",
+)
+
+label_flag(
     name = "compiler_rt",
     build_setting_default = "@rules_cc_toolchain//config:libclang_rt_multiplexer",
 )

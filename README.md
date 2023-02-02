@@ -125,7 +125,7 @@ cc_toolchain_import(
     # particular library. It is also possible to omit both static_library and
     # shared_library, creating a header only toolchain lib.
     # Use with statically linkage.
-    static_library = "lib/libc++.a",
+    static_library = "lib/x86_64-unknown-linux-gnu/libc++.a",
     # Use with shared linkage.
     shared_library = "lib/libc++.so",
 
